@@ -67,6 +67,26 @@ public class MotorDiesel implements Motor {
 	}
 }
 ```
+The Application context is:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+   <context:annotation-config/>
+
+   <bean id="myCar" class="com.markikito.prueba.autowired.autowiredsetter.vehicle.impl.Car">
+   </bean>
+
+   <bean id="myMotor" class="com.markikito.prueba.autowired.autowiredsetter.vehicle.impl.MotorDiesel">
+   </bean>
+</beans>
+```
 And the test is:
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -113,10 +133,46 @@ In this case the Autowired is positioned on the setter method:
 The messages of execution are :
 
 ```shell
-Returning cached instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
-Returning cached instance of singleton bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
-Returning cached instance of singleton bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
-Returning cached instance of singleton bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
-Creating shared instance of singleton bean 'myCar'
-Creating instance of bean 'myCar'
+[DEBUG]Returning cached instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+[DEBUG]Returning cached instance of singleton bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+[DEBUG]Returning cached instance of singleton bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+[DEBUG]Returning cached instance of singleton bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+[DEBUG]Creating shared instance of singleton bean 'myCar'
+[DEBUG]Creating instance of bean 'myCar'
+Inside constructor Car
 ```
+The first log messages are from the Spring context initialization, because the log´s config is set DEBUG level:
+ - Run Spring preprocessors
+ - Create instance Bean MyCar that is a singleton (There is only one instance of the class in virtual machine)
+ - An finally the Constructor is executed and show the messages 'Inside constructor Car'
+ 
+ The next lines of log:
+ ```shell
+[DEBUG]Registered injected element on class [Car]: AutowiredMethodElement for public void Vehiculo.setMotor(Motor)
+[DEBUG]Eagerly caching bean 'myCar' to allow for resolving potential circular references
+[DEBUG]Processing injected element of bean 'myCar': AutowiredMethodElement for public void Vehiculo.setMotor(Motor)
+[DEBUG]Creating shared instance of singleton bean 'myMotor'
+[DEBUG]Creating instance of bean 'myMotor'
+Inside constructor MotorDiesel
+```
+Primero Spring detecta que hay una notación de autoriwire sobre el método 'setMotor(Motor)' 
+Busca un bean en el contexto que implemente la interfaz
+y crea un singleton sobre este bean haciendo que también se invoque el constructor de Motor.
+```shell
+[DEBUG]Eagerly caching bean 'myMotor' to allow for resolving potential circular references
+[DEBUG]Finished creating instance of bean 'myMotor'
+[DEBUG]Autowiring by type from bean name 'myCar' to bean named 'myMotor'
+[DEBUG]Finished creating instance of bean 'myCar'
+```
+Se comprueba que no halla referencias circulares
+Se termina la creación de la instancia 'myMotor' y se hace un autowiring por tipo para enganchar el coche con su motor.
+Se da por terminada la creación de la instancia coche.
+
+```shell
+Putting the keys in the car ignition
+Starting the diesel engine
+Starting the car
+```
+
+And finally the messages of the methods about start the car is show.
+
