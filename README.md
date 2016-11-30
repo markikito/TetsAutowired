@@ -222,6 +222,48 @@ AutowiredMethodElement for public void Vehiculo.setMotor(Motor)
 Así que el autowired asigna al atributo motor el bean directamente sin utilizar el setter.
 
 
+## Over Constructor
+En este caso la notación Autowired está sobre el constructor de la clase Car. En los ejemplos anteriores el Autowired estaba sobre la clase Base Vehiculo, es necesario hacerlo así porque la clase hija es la invocada desde el contexto de Spring y es la que necesita tener el Autowired.
+
+Asi que la clase quedaría de esta manera:
+
+```java
+public class Car extends Vehiculo {	
+	@Autowired
+	public Car(Motor motor) {
+		super(motor);		
+		System.out.println("Inside constructor Car");
+		this.motor=motor;
+	}
+```
+
+El log de la ejecución es:
+
+```shell
+[DEBUG]Creating shared instance of singleton bean 'myCar'
+[DEBUG]Creating instance of bean 'myCar'
+[DEBUG]Creating shared instance of singleton bean 'myMotor'
+[DEBUG]Creating instance of bean 'myMotor'
+Inside constructor MotorDiesel
+[DEBUG]Eagerly caching bean 'myMotor' to allow for resolving potential circular references
+[DEBUG]Finished creating instance of bean 'myMotor'
+[DEBUG]Autowiring by type from bean name 'myCar' via constructor to bean named 'myMotor'
+Inside Vehiculo constructor.
+Inside constructor Car
+[DEBUG]Eagerly caching bean 'myCar' to allow for resolving potential circular references
+[DEBUG]Finished creating instance of bean 'myCar'
+[DEBUG]Returning cached instance of singleton bean 'myMotor'
+[DEBUG]Returning cached instance of singleton bean 'lifecycleProcessor'
+[DEBUG]Searching for key 'spring.liveBeansView.mbeanDomain' in [systemProperties]
+[DEBUG]Searching for key 'spring.liveBeansView.mbeanDomain' in [systemEnvironment]
+[DEBUG]Could not find key 'spring.liveBeansView.mbeanDomain' in any property source. Returning [null]
+[DEBUG]Returning cached instance of singleton bean 'myCar'
+Putting the keys in the car ignition
+Starting the diesel engine
+Starting the car
+```
+
+Se crean instancia de las dos referencias en el fichero de contexto myCar y myMotor.
 
 
 
