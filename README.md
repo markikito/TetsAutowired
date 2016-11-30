@@ -124,8 +124,9 @@ public class AutoWiredSetterTest extends TestCase{
 ## Over Setter
 In this case the Autowired is positioned on the setter method:
 ```java
-@Autowired
+	@Autowired
 	public void setMotor(Motor motor) {
+		System.out.println("Metodo setMotor()....");
 		this.motor = motor;
 	}
 ```
@@ -140,34 +141,36 @@ The messages of execution are :
 [DEBUG]Creating shared instance of singleton bean 'myCar'
 [DEBUG]Creating instance of bean 'myCar'
 Inside constructor Car
-```
-The first log messages are from the Spring context initialization, because the log´s config is set DEBUG level:
- - Run Spring preprocessors
- - Create instance Bean MyCar that is a singleton (There is only one instance of the class in virtual machine)
- - An finally the Constructor is executed and show the messages 'Inside constructor Car'
- 
- The next lines of log:
- ```shell
 [DEBUG]Registered injected element on class [Car]: AutowiredMethodElement for public void Vehiculo.setMotor(Motor)
 [DEBUG]Eagerly caching bean 'myCar' to allow for resolving potential circular references
 [DEBUG]Processing injected element of bean 'myCar': AutowiredMethodElement for public void Vehiculo.setMotor(Motor)
 [DEBUG]Creating shared instance of singleton bean 'myMotor'
 [DEBUG]Creating instance of bean 'myMotor'
 Inside constructor MotorDiesel
-```
-Primero Spring detecta que hay una notación de autoriwire sobre el método 'setMotor(Motor)' 
-Busca un bean en el contexto que implemente la interfaz
-y crea un singleton sobre este bean haciendo que también se invoque el constructor de Motor.
-```shell
 [DEBUG]Eagerly caching bean 'myMotor' to allow for resolving potential circular references
 [DEBUG]Finished creating instance of bean 'myMotor'
 [DEBUG]Autowiring by type from bean name 'myCar' to bean named 'myMotor'
+Metodo setMotor()....
 [DEBUG]Finished creating instance of bean 'myCar'
+[DEBUG]Returning cached instance of singleton bean 'myMotor'
+[DEBUG]Returning cached instance of singleton bean 'lifecycleProcessor'
+[DEBUG]Searching for key 'spring.liveBeansView.mbeanDomain' in [systemProperties]
+[DEBUG]Searching for key 'spring.liveBeansView.mbeanDomain' in [systemEnvironment]
+[DEBUG]Could not find key 'spring.liveBeansView.mbeanDomain' in any property source. Returning [null]
+[DEBUG]Returning cached instance of singleton bean 'myCar'
 ```
-Se comprueba que no halla referencias circulares
-Se termina la creación de la instancia 'myMotor' y se hace un autowiring por tipo para enganchar el coche con su motor.
-Se da por terminada la creación de la instancia coche.
+Todas estas líneas de log son simplemente la inicialización del contexto de Spring.
 
+Detalles importantes:
+- Los beans declarados en el fichero de contexto se inicializan utilizando el patrón Singleton.
+- Se inicializa la clase Car ejecutandose el constructor "Inside constructor Car"
+- Spring anota que hay un metódo con Autowired: "AutowiredMethodElement for public void Vehiculo.setMotor(Motor)"
+- Sigue tratando el fichero de contexto y levanta el Bean del Motor : "Inside constructor MotorDiesel"
+- Se ejecuta el Autowired por tipo "Autowiring by type from bean name 'myCar' to bean named 'myMotor'"
+- Se ejecuta el método setMotor(): "Metodo setMotor()...."
+- Se finaliza la creación de los beans y se cachean las instancias.
+ 
+ The next lines of log:
 ```shell
 Putting the keys in the car ignition
 Starting the diesel engine
