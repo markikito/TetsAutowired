@@ -170,7 +170,7 @@ Detalles importantes:
 - Se ejecuta el método setMotor(): "Metodo setMotor()...."
 - Se finaliza la creación de los beans y se cachean las instancias.
  
- The next lines of log:
+The next lines of log:
 ```shell
 Putting the keys in the car ignition
 Starting the diesel engine
@@ -180,4 +180,50 @@ Starting the car
 And finally the messages of the methods about start the car is show.
 
 ## Over Atribbute
+En esta prueba se pone el Autowired sobre el atributo de la clase:
+
+```java
+public abstract class Vehiculo implements IVehicle {		
+	@Autowired
+	protected Motor motor;
+	
+	public void setMotor(Motor motor) {
+		System.out.println("Metodo setMotor()....");
+		this.motor = motor;
+	}
+	
+	public Motor getMotor() {
+		return motor;
+	}	
+}
+```
+En las siguientes líneas muestros las partes del log que muestran las diferencias significativas:
+
+```shell
+[DEBUG]Creating instance of bean 'myCar'
+Inside constructor Car
+Registered injected element on class [Car]: AutowiredFieldElement for protected Motor Vehiculo.motor
+Eagerly caching bean 'myCar' to allow for resolving potential circular references
+Processing injected element of bean 'myCar': AutowiredFieldElement for protected Motor Vehiculo.motor
+Creating shared instance of singleton bean 'myMotor'
+Creating instance of bean 'myMotor'
+Inside constructor MotorDiesel
+```
+La principal diferencia es que no se muestra el System.out del método setMotor(...) . Así que cuando el autowired está sobre el atributo no se ejecuta el metodo seter.
+
+En relación a esto en los logs de Spring aparece lo siguiente:
+```shell
+Processing injected element of bean 'myCar': AutowiredFieldElement for protected Motor Vehiculo.motor
+```
+Y en el ejemplo anterior había esto:
+```shell
+AutowiredMethodElement for public void Vehiculo.setMotor(Motor)
+```
+Así que el autowired asigna al atributo motor el bean directamente sin utilizar el setter.
+
+
+
+
+
+
 
