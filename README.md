@@ -264,8 +264,16 @@ Starting the car
 ```
 
 Se crean instancia de las dos referencias en el fichero de contexto myCar y myMotor.
+Primero se ejecuta el constructor de MotorDiesel y se da por finalizada la creación de la instancia.
 
+Seguidamente se produce el Autowiring por constructor se injecta el bean MyMotor en MyCar:
+```shell
+Autowiring by type from bean name 'myCar' via constructor to bean named 'myMotor'
+```
 
+Cosas curiosas en estas trazas es que está vez se ejecuta primero el constructor de la clase MotorDiesel.
+
+Y por ahora esto es todo.
 
 
 
