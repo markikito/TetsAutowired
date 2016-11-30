@@ -120,6 +120,8 @@ public class AutoWiredSetterTest extends TestCase{
 }
 ```
 
+In the following sections the traces and small explication will be shown.
+
 
 ## Over Setter
 In this case the Autowired is positioned on the setter method:
@@ -159,10 +161,10 @@ Metodo setMotor()....
 [DEBUG]Could not find key 'spring.liveBeansView.mbeanDomain' in any property source. Returning [null]
 [DEBUG]Returning cached instance of singleton bean 'myCar'
 ```
-Todas estas líneas de log son simplemente la inicialización del contexto de Spring.
+All lines of logs are simply initializing the Context of Spring.
 
-Detalles importantes:
-- Los beans declarados en el fichero de contexto se inicializan utilizando el patrón Singleton.
+Important things:
+- Declared beans are initialized using the singleton pattern
 - Se inicializa la clase Car ejecutandose el constructor "Inside constructor Car"
 - Spring anota que hay un metódo con Autowired: "AutowiredMethodElement for public void Vehiculo.setMotor(Motor)"
 - Sigue tratando el fichero de contexto y levanta el Bean del Motor : "Inside constructor MotorDiesel"
