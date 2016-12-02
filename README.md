@@ -165,12 +165,12 @@ All lines of logs are simply initializing the Context of Spring.
 
 Important things:
 - Declared beans are initialized using the singleton pattern
-- Se inicializa la clase Car ejecutandose el constructor "Inside constructor Car"
-- Spring anota que hay un metódo con Autowired: "AutowiredMethodElement for public void Vehiculo.setMotor(Motor)"
-- Sigue tratando el fichero de contexto y levanta el Bean del Motor : "Inside constructor MotorDiesel"
-- Se ejecuta el Autowired por tipo "Autowiring by type from bean name 'myCar' to bean named 'myMotor'"
-- Se ejecuta el método setMotor(): "Metodo setMotor()...."
-- Se finaliza la creación de los beans y se cachean las instancias.
+- Car class constructor is executed : "Inside constructor Car"
+- Spring write down that is a method with Autowired: "AutowiredMethodElement for public void Vehiculo.setMotor(Motor)"
+- Continue reading the context file and  initialize the MotorDiesel Bean : "Inside constructor MotorDiesel"
+- The autowired is launched by type "Autowiring by type from bean name 'myCar' to bean named 'myMotor'"
+- The Setter method is executed setMotor(): "Metodo setMotor()...."
+- The creation of the beans is completed and the instances of the beans are cached.
  
 The next lines of log:
 ```shell
@@ -182,7 +182,7 @@ Starting the car
 And finally the messages of the methods about start the car is show.
 
 ## Over Atribbute
-En esta prueba se pone el Autowired sobre el atributo de la clase:
+In this test the Autowired is placed on the attribute of the class:
 
 ```java
 public abstract class Vehiculo implements IVehicle {		
@@ -199,7 +199,7 @@ public abstract class Vehiculo implements IVehicle {
 	}	
 }
 ```
-En las siguientes líneas muestros las partes del log que muestran las diferencias significativas:
+In the following lines samples the parts of the log that show the significant differences:
 
 ```shell
 [DEBUG]Creating instance of bean 'myCar'
@@ -211,23 +211,23 @@ Creating shared instance of singleton bean 'myMotor'
 Creating instance of bean 'myMotor'
 Inside constructor MotorDiesel
 ```
-La principal diferencia es que no se muestra el System.out del método setMotor(...) . Así que cuando el autowired está sobre el atributo no se ejecuta el metodo seter.
+The main difference is that the System.out of the setMotor method is not displayed (...). So when the autowired is over the attribute the seter method is not executed.
 
-En relación a esto en los logs de Spring aparece lo siguiente:
+The Spring logs appear as follows:
 ```shell
 Processing injected element of bean 'myCar': AutowiredFieldElement for protected Motor Vehiculo.motor
 ```
-Y en el ejemplo anterior había esto:
+In the previous test case the logs were as follows:
 ```shell
 AutowiredMethodElement for public void Vehiculo.setMotor(Motor)
 ```
-Así que el autowired asigna al atributo motor el bean directamente sin utilizar el setter.
+When the Autowired is placed above the attribute the engine is injected without using the setter method.
 
 
 ## Over Constructor
-En este caso la notación Autowired está sobre el constructor de la clase Car. En los ejemplos anteriores el Autowired estaba sobre la clase Base Vehiculo, es necesario hacerlo así porque la clase hija es la invocada desde el contexto de Spring y es la que necesita tener el Autowired.
+In this case the Autowired notation is on the constructor of the class Car. In the previous examples the Autowired was on the Base Vehicle class, it is necessary to do so because the daughter class is the one invoked from the context of Spring and is the one that needs to have The Autowired.
 
-Asi que la clase quedaría de esta manera:
+So the class would look like this:
 
 ```java
 public class Car extends Vehiculo {	
@@ -239,7 +239,7 @@ public class Car extends Vehiculo {
 	}
 ```
 
-El log de la ejecución es:
+The execution log is:
 
 ```shell
 [DEBUG]Creating shared instance of singleton bean 'myCar'
@@ -265,17 +265,17 @@ Starting the diesel engine
 Starting the car
 ```
 
-Se crean instancia de las dos referencias en el fichero de contexto myCar y myMotor.
-Primero se ejecuta el constructor de MotorDiesel y se da por finalizada la creación de la instancia.
+Instances of the two references are created in the context file myCar and myMotor.
+First the MotorDiesel constructor is executed and the creation of the instance is finished.
 
-Seguidamente se produce el Autowiring por constructor se injecta el bean MyMotor en MyCar:
+Autowiring is then produced by the builder and the MyMotor bean is injected into MyCar:
 ```shell
 Autowiring by type from bean name 'myCar' via constructor to bean named 'myMotor'
 ```
 
-Cosas curiosas en estas trazas es que está vez se ejecuta primero el constructor de la clase MotorDiesel.
+Curious things in these traces is that this time the engine builder of the MotorDiesel class is first run.
 
-Y por ahora esto es todo.
+And for now that's all.
 
 
 
